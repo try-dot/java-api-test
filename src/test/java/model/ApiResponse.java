@@ -30,5 +30,6 @@ public class ApiResponse {
         this.message = message;
     }
 
-
+    public ApiResponse() {
+    }
 }

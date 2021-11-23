@@ -1,6 +1,7 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.javafaker.Faker;
 
 public class User {
 
@@ -8,12 +9,14 @@ public class User {
     @JsonProperty("username")
     private String userName;
     private String firstName;
-    private String LastName;
+    private String lastName;
     private String email;
     private String password;
     private String phone;
     private long userStatus;
 
+    public User() {
+    }
 
     public Long getId() {
         return id;
@@ -42,11 +45,11 @@ public class User {
     }
 
     public String getLastName() {
-        return LastName;
+        return lastName;
     }
 
     public void setLastName(String lastName) {
-        LastName = lastName;
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -79,6 +82,20 @@ public class User {
 
     public void setUserStatus(long userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public static User generateRandomUser(){
+        User user = new User();
+        Faker faker = new Faker();
+        user.setId(faker.number().randomNumber());
+        user.setUserName(faker.name().username());
+        user.setFirstName(faker.name().firstName());
+        user.setLastName(faker.name().lastName());
+        user.setEmail(faker.internet().emailAddress());
+        user.setPassword(faker.internet().password());
+        user.setPhone(faker.phoneNumber().cellPhone());
+        user.setUserStatus(faker.number().randomNumber());
+        return user;
     }
 
 }

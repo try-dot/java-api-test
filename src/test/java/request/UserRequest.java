@@ -1,49 +1,99 @@
 package request;
 
-import io.restassured.RestAssured;
+import constant.StatusCode;
 import io.restassured.response.Response;
 import model.ApiResponse;
 import model.User;
 import java.util.List;
+import static io.restassured.RestAssured.given;
 
 public class UserRequest extends BaseRequest {
 
-    private static final String USERS_LIST_ENDPOINT = "/user/createWithList";
-    private static final String USER_ENDPOINT = "/user";
-    private static final String LOGIN_ENDPOINT = "/user/login";
-    private static final String LOGOUT_ENDPOINT = "/user/logout";
+    static final String USERS_LIST_ENDPOINT = "/user/createWithList";
+    static final String USER_ENDPOINT = "/user";
+    static final String USER_PARAM_ENDPOINT = "/user/{username}";
+    static final String LOGIN_ENDPOINT = "/user/login";
+    static final String LOGOUT_ENDPOINT = "/user/logout";
 
-    public Response createUsersWithList(List<User> userList) {
-        return RestAssured.given(specification).body(userList).get(USERS_LIST_ENDPOINT);
+
+    public ApiResponse createUsersWithList(List<User> userList) {
+        Response response = given(requestSpec).body(userList).get(USERS_LIST_ENDPOINT);
+        response.then().statusCode(StatusCode.OK);
+        return response.body().as(ApiResponse.class);
     }
 
-    public Response getUserResponse(String userName) {
-        return RestAssured.given(specification)
-                .pathParams("username", userName)
-                .get(USER_ENDPOINT +"/" + "{username}");
+
+    public ApiResponse createUsersWitEmptyList() {
+        Response response = given(requestSpec).get(USERS_LIST_ENDPOINT);
+        response.then().statusCode(StatusCode.INTERNAL_SERVER_ERROR);
+        return response.body().as(ApiResponse.class);
     }
 
     public User getUser(String userName) {
-        return getUserResponse(userName).getBody().as(User.class);
-    }
-
-    public Response updateUser(String userName) {
-        return RestAssured.given(specification)
+        Response response = given(requestSpec)
                 .pathParams("username", userName)
-                .put(USER_ENDPOINT +"/" + "{username}");
+                .get(USER_PARAM_ENDPOINT);
+        response.then().statusCode(StatusCode.OK);
+        return response.body().as(User.class);
     }
 
-    public ApiResponse logUser(String userName, String password) {
-        return RestAssured.given(specification)
+    public ApiResponse getNotExistedUser(String userName) {
+        Response response = given(requestSpec)
+                .pathParams("username", userName)
+                .get(USER_PARAM_ENDPOINT);
+        response.then().statusCode(StatusCode.NOT_FOUND);
+        return response.body().as(ApiResponse.class);
+    }
+
+
+    public ApiResponse updateUser(String userName) {
+        User user = User.generateRandomUser();
+        user.setUserName(userName);
+        Response response = given(requestSpec)
+                .pathParams("username", userName)
+                .body(user)
+                .put(USER_PARAM_ENDPOINT);
+        response.then().statusCode(StatusCode.OK);
+        return response.body().as(ApiResponse.class);
+    }
+
+    public ApiResponse deleteUser(String userName) {
+        Response response = given(requestSpec)
+                .pathParams("username", userName)
+                .put(USER_PARAM_ENDPOINT);
+        response.then().statusCode(StatusCode.OK);
+        return response.body().as(ApiResponse.class);
+    }
+
+    public Response deleteNotExistedUser(String userName) {
+        Response response = given(requestSpec)
+                .pathParams("username", userName)
+                .put(USER_PARAM_ENDPOINT);
+        return response;
+    }
+
+    public ApiResponse logInUser(String userName, String password) {
+        Response response = given(requestSpec)
                 .queryParam("username", userName)
                 .queryParam("password", password)
-                .get(LOGIN_ENDPOINT)
-                .as(ApiResponse.class);
+                .get(LOGIN_ENDPOINT);
+        response.then().statusCode(StatusCode.OK);
+        return  response.body().as(ApiResponse.class);
 
     }
 
     public Response logOutUser() {
-        return RestAssured.given(specification)
+        return given(requestSpec)
                 .get(LOGOUT_ENDPOINT);
     }
+
+    public ApiResponse createUser(User user) {
+        Response response=  given(requestSpec)
+                .body(user)
+                .post(USER_ENDPOINT);
+        response.then().statusCode(StatusCode.OK);
+        return response.body().as(ApiResponse.class);
+
+    }
+
 }
