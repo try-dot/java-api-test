@@ -85,7 +85,7 @@ public class User {
     }
 
     public static User generateRandomUser(){
-        User user = new User();
+        final User user = new User();
         Faker faker = new Faker();
         user.setId(faker.number().randomNumber());
         user.setUserName(faker.name().username());

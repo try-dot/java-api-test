@@ -1,35 +1,33 @@
 package model.order;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
+import com.github.javafaker.Faker;
 
 public class Order {
 
-    private Long id;
-    private Long petId;
+    private Integer id;
+    private Integer petId;
     private Integer quantity;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="GMT")
-    private Date shipDate;
+    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="GMT")
+    private String shipDate;
     private Status status;
     private Boolean complete;
 
     public Order() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getPetId() {
+    public Integer getPetId() {
         return petId;
     }
 
-    public void setPetId(Long petId) {
+    public void setPetId(Integer petId) {
         this.petId = petId;
     }
 
@@ -41,11 +39,11 @@ public class Order {
         this.quantity = quantity;
     }
 
-    public Date getShipDate() {
+    public String getShipDate() {
         return shipDate;
     }
 
-    public void setShipDate(Date shipDate) {
+    public void setShipDate(String shipDate) {
         this.shipDate = shipDate;
     }
 
@@ -63,6 +61,23 @@ public class Order {
 
     public void setComplete(Boolean complete) {
         this.complete = complete;
+    }
+
+    public static Order generateRandomOrder(Status status) {
+
+        int minId = 1;
+        int maxId = 10;
+        final Order order = new Order();
+        Faker faker = new Faker();
+        order.setId(faker.number().numberBetween(minId, maxId));
+        order.setPetId(faker.number().numberBetween(minId, maxId));
+        order.setQuantity(faker.number().randomDigit());
+        order.setShipDate(faker.date().birthday().toString());
+        order.setShipDate(faker.date().birthday().toString());
+        order.setStatus(status);
+        order.setComplete(faker.bool().bool());
+        return order;
+
     }
 
 }

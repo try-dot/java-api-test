@@ -4,7 +4,6 @@ import model.ApiResponse;
 import model.User;
 import org.junit.jupiter.api.Test;
 import request.UserRequest;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class UserRequestTest {
         List<User> list = new ArrayList<>();
         list.add(firstUser);
         list.add(secondUser);
-        final ApiResponse response = userRequest.createUsersWithList(list);
+        ApiResponse response = userRequest.createUsersWithList(list);
         assert response.getCode() == StatusCode.OK;
         assert response.getMessage().equals(successfulResponseMessage);
 
@@ -39,7 +38,7 @@ public class UserRequestTest {
     @Test
     void shouldReturnUserWithTheSameUserName() {
         User user = userRequest.getUser(existedUserName);
-        assertThat(user.getUserName().equals(existedUserName));
+        assertThat(user.getUserName()).isEqualTo(existedUserName);
     }
 
     @Test
