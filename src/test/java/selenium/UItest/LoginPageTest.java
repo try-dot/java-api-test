@@ -21,7 +21,7 @@ public class LoginPageTest {
         driver = new ChromeDriver();
         loginPage = new LoginPage(driver);
         loginPage.loadPage();
-        loginPage.findWebElement(loginPage.signInWithAppleButton).isDisplayed();
+        assert loginPage.findWebElement(loginPage.signInWithAppleButton).isDisplayed();
         driver.quit();
 
     }
@@ -35,7 +35,7 @@ public class LoginPageTest {
         loginPage.loadPage();
         loginPage.typeEmail(wrongEmail);
         loginPage.clickSignInButton();
-        loginPage.findWebElement(loginPage.errorUserNameMessage).isDisplayed();
+        assert loginPage.findWebElement(loginPage.errorUserNameMessage).isDisplayed();
         driver.quit();
 
     }
